@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account Deletion</title>
+    <link rel="icon" href="{{ url_for('static', filename='images/icon.png') }}" type="image/png">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/delete_style.css') }}">
+    <script src="{{ url_for('static', filename='js/basic_js.js') }}"></script>
+    <!-- <link rel="stylesheet" href="/static/css/delete_style.css">
+    <script src="/static/js/basic_js.js"></script> -->
+</head>
+<body>
+    <div class="container">
+        <div class="warning-icon">⚠️</div>
+        <h1>Are you sure you want to delete your account?</h1>
+        <p>This action is irreversible. All your data will be permanently removed.</p>
+
+        <form action="{{url_for('delete',tab=tab,emp_id=emp_id)}}" method="POST">
+          {%if (job_role.lower() not in ['manager'] and tab == 'employees') or tab !='employees' %}
+            <div class="form-group">
+              <input class="password {{category}}" type="password"  id="password" name="password" placeholder="{% if category == 'wrong_password' %}Incorrect password. Please try again.{% else %}Enter your password{% endif %}" required>
+              <span class="toggle-password" onclick="toggleVisibility('password', this)">🙈</span>
+            </div>
+          {% endif %}
+          <div class="buttons">
+            <button type="submit" class="btn btn-delete">Delete Account</button>
+            <a href="{%if tab == 'profile' %}{{url_for('profile')}}{% elif tab == 'employees'%}{{ url_for('employees')}}{% else %} {{url_for('home')}}{% endif %}" style="text-decoration: none; padding: 10px 50px;" class="btn btn-cancel">Cancel</a>
+          </div>
+        </form>
+    </div>
+</body>
+</html>

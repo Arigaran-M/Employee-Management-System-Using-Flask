@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <!-- <meta http-equiv="refresh" content="15"> -->
+    <meta name="viewport" content="width=device-width, initial-scale=10">
+    <title>
+        {% if current_tab == 'home' %}
+            Home
+        {% elif current_tab == 'profile' %}
+            My Profile
+        {% elif current_tab == 'employees' %}
+            Employees Details
+        {% elif current_tab == 'logout' %}
+            Log out
+        {% else %}
+            Not Found
+        {% endif %}
+    </title>
+    <link rel="icon" href="{{ url_for('static', filename='images/icon.png') }}" type="image/png">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/home_style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="{{ url_for('static', filename='js/basic_js.js') }}"></script>
+    <script src="/static/js/basic_js.js"></script>
+</head>
+
+<body>
+    <div class="navbar" id="navbar">
+        {% if employee_data is defined %}
+            {% set job_role = employee_data.get('job_role','') %}
+        {% else %}
+            {% if job_role %}
+                {% set job_role = job_role %}
+            {% else %}
+                {% set job_role = '' %}
+            {% endif %}
+        {% endif %}
+
+        {% if current_tab in ['profile','employees','logout'] %}
+            {% if job_role.lower() == 'manager' %}
+                <h2>Manager Dashboard</h2>
+            {% else %}
+                </h2>Employee Dashboard</h2>
+            {% endif %}
+        {% else %}
+            <img src="{{ url_for('static', filename='images/LogoWhite.png') }}" alt="Logo" style="width: 120px; height: 40px;object-fit: cover;">
+        {% endif %}
+
+        
+        <div class="menu">
+            <a href="{{ url_for('home') }}" class="tab-link {% if current_tab == 'home' %}active{% endif %}">Home</a>
+            {% if job_role %}
+                <a href="{{ url_for('profile') }}" class="tab-link {% if current_tab == 'profile' %}active{% endif %}">My Profile</a>
+                {% if job_role.lower() in ['manager', 'ceo'] %}
+                    <a href="{{ url_for('employees') }}" class="tab-link {% if current_tab == 'employees' %}active{% endif %}">Employees Details</a>
+                {% endif %}
+                <a href="{{ url_for('logout') }}" class="tab-link {% if current_tab == 'logout' %}active{% endif %}">Logout</a>
+            {% else %}
+                <a href="{{ url_for('logIn') }}" class="tab-link {% if current_tab == 'login' %}active{% endif %}">Log in</a>
+                <a href="{{ url_for('signUp') }}" class="tab-link {% if current_tab == 'signup' %}active{% endif %}">Sing up</a>
+            {% endif %}
+            </div>
+    </div>
+
+    {% with messages = get_flashed_messages(with_categories=True) %}
+        {% if messages %}
+            {% for message_tuple in messages %}
+                {% if message_tuple is iterable and message_tuple | length == 2 %}
+                    {% set category, message = message_tuple %}
+                {% else %}
+                    {% set category = "default" %}
+                    {% set message = message_tuple %}
+                {% endif %}
+                {% if category == "tryagain" %}
+                    <!-- <div class="alert-message alert alerts alert-warning fade show shows" role="alert">
+                        <div class="alert-row tryagain " style="border-top: 0;">
+                            ⚠️ Alert: Something went wrong!
+                        </div>
+                        <div class="message-row tryagain" style="padding: 25px auto;">
+                            {{ message}}
+                        </div>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">&times;</button>
+                    </div> -->
+                {% elif category == "success" %}
+                    <!-- <div class="alert-message alert alerts alert-warning fade show shows" role="alert">
+                        <div class="alert-row success" style="border-top: 0;">
+                            Success!
+                        </div>
+                        <div class="message-row success" style="height: 23px;">
+                            {{ message }}
+                        </div>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">&times;</button>
+                    </div> -->
+                {% elif category == "warning" %}
+                    <div class="overlay" id="overlay">
+                        <div class="modal" id="modal" onclick="event.stopPropagation()">
+                            <h2 style="color: rgb(196, 10, 10);">Security Alert</h2>
+                            <p>{{ message }}</p>
+                            <button onclick="window.location.href='/profile/change-password'" class="modal-login-btn" style="background-color: rgb(196, 10, 10);">
+                                Change Password
+                            </button>
+                            <div class="stay-logged-out" onclick="hideOverlay()">Dismiss</div>
+                        </div>
+                    </div>
+                {% endif %}                
+            {% endfor %}
+
+        {% endif %}
+    {% endwith %}
+
+    {% if current_tab == 'home' %}
+        <div style="width: 95.6%; margin:0px auto; margin-top:71px; padding-top: 0; padding-bottom: 0; height: 568px;  border-radius: 0%; background: linear-gradient(135deg, #0095f6 50%, #00c887 50%); color: #fff;" class="container section {% if current_tab == 'home' %}active{% endif %}" id="home">
+            <section class="hero">
+                <div class="h4">Welcome! Let’s start!</div>
+                <h1>Technology Meets Genius</h1>
+                <p>
+                  At <strong>Datatech Genius</strong>, we empower businesses to excel in the ever-evolving digital age.
+                  By harnessing the latest advancements in technology, we craft solutions that drive innovation, streamline operations, and unlock new possibilities.
+                  Our expertise spans across various domains, ensuring that every idea, big or small, is transformed into a powerful reality.
+                  With a commitment to excellence and a customer-first approach, we strive to deliver measurable results that align with your business objectives.
+                  Whether it’s optimizing workflows, enhancing user experiences, or scaling operations, <strong>Datatech Genius</strong> is your trusted partner in achieving sustainable growth through technology.
+                </p>
+              </section>
+        </div>
+    {% elif current_tab == 'profile' %}
+        <div class="container section {% if current_tab == 'profile' %}active{% endif %}" id="profile">
+            
+            <h1 style="text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);">Hi <span>{{ employee_data.get('username','').title() }}</span> ! Let’s Make Today Productive  </h1>
+            <div style=" max-width: 1260px;;  border: 2px solid #ccc; border-radius: 10px; background-color: white; overflow-x: auto;">
+                <div style="max-height: 312.5px; overflow-y: auto;">
+                    <table style="border-collapse: collapse; width: max-content; min-width: 100%;">
+                        <tbody>
+
+                            <tr style="border-top: 1px solid #ddd;">
+                                <th style="text-align: left;">Username</th>
+                                <td>{{ employee_data.get('username').title() }}</td>
+                            </tr>
+                            <tr>
+                                <th style="text-align: left;">Employee ID</th>
+                                <td>{{ employee_data.get('emp_id') }}</td>
+                            </tr>
+                            <tr>
+                                <th style="text-align: left;">Email Id</th>
+                                <td>{{ employee_data.get('email') }}</td>
+                            </tr>
+                            <tr>
+                                <th style="text-align: left;">Department</th>
+                                <td>{{ employee_data.get('department') }}</td>
+                            </tr>
+                            <tr>
+                                <th style="text-align: left;">Job Role</th>
+                                <td>{{ employee_data.get('job_role')}}</td>
+                            </tr>
+                            <tr>
+                                <th style="text-align: left;">Joined Date</th>
+                                <td>{{ employee_data.get('joined_date').strftime('%d-%m-%Y') }}</td>
+                            </tr>
+
+                            {%if employee_data.get('mobile')%}
+                                <tr>
+                                    <th style="text-align: left;">Mobile Number</th>
+                                    <td>{{ employee_data.get('mobile') }}</td>
+                                </tr>
+                            {% endif %}
+                            
+                            {%if employee_data.get('salary')%}
+                                <tr>
+                                    <th style="text-align: left;">Annual Salary</th>
+                                    <td>{{ employee_data.get('salary') }}</td>
+                                </tr>
+                            {% endif %}
+
+                            {%if employee_data.get('gender')%}
+                            <tr>
+                                <th style="text-align: left;">Gender</th>
+                                <td>{{ employee_data.get('gender') }}</td>
+                            </tr>
+                            {% endif %}
+
+                            {%if employee_data.get('date_of_birth')%}
+                                <tr>
+                                    <th style="text-align: left;">Date of Birth</th>
+                                    <td>{{ employee_data.get('date_of_birth').strftime('%d-%m-%Y') }}</td>
+                                </tr>
+                            {% endif %}
+
+
+                            {%if employee_data.get('marital_status')%}
+                                <tr>
+                                    <th style="text-align: left;">Marital Status</th>
+                                    <td>{{ employee_data.get('marital_status') }}</td>
+                                </tr>
+                            {% endif %}
+
+                            {%if employee_data.get('skill_set')%}
+                                <tr>
+                                    <th style="text-align: left;">Skill Set</th>
+                                    <td>{{ employee_data.get('skill_set') }}</td>
+                                </tr>
+                            {% endif %}
+                            {%if employee_data.get('address')%}
+                                <tr>
+                                    <th style="text-align: left;">Address</th>
+                                    <td>{{ employee_data.get('address','').title() }}</td>
+                                </tr>
+                            {% endif %}
+                            
+                            {%if employee_data.get('state')%}
+                                <tr>
+                                    <th style="text-align: left;">State</th>
+                                    <td>{{ employee_data.get('state','').title() }}</td>
+                                </tr>
+                            {% endif %}
+
+                            {%if employee_data.get('country')%}
+                                <tr>
+                                    <th style="text-align: left;">Country</th>
+                                    <td>{{ employee_data.get('country','') }}</td>
+                                </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="buttons">
+                
+                <a href="{{ url_for('edit', tab= current_tab, emp_id = employee_data.get('emp_id'))}}" class="btn update">Update Account</a>
+                <a href="{{ url_for('change_password')}}" class="btn change-password">Change Password</a>
+                <a href="{{ url_for('delete', tab= current_tab, emp_id = employee_data.get('emp_id'))}}" class="btn delete">Delete Account</a>
+            </div>
+        </div>
+
+    {% elif current_tab == 'employees' %}
+        <div class="container section {% if current_tab == 'employees' %}active{% endif %}" style="width: 93%;" id="employees">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <h1>Employees Details</h1>
+                <div style="margin-right: 8px; width: 340px;
+                height: 45px;
+                display: flex;
+                flex-direction: row-reverse;
+                justify-content: space-between;
+                ">
+                   <a href="{{ url_for('add_employee', tab= current_tab)}}" class="btn update" style="padding: 10px 15px; width: auto;">+ Add Employee</a>
+                    <button class="show-more-btn" onclick="toggleColumns()" style="padding: 8px 30px; font-family: 'Poppins', sans-serif;font-weight: bold;">
+                        Show More
+                   </button>
+               </div>
+                </div>
+                
+            <div style="margin-left: 3px; max-width: 1260px;  border: 2px solid #ccc; border-radius: 10px; background-color: white; overflow-x: auto;">
+                <div style="max-height: 370px; overflow-y: auto;">
+                    <table style="border-collapse: collapse; width: max-content; min-width: 100%;">
+                        <thead>
+                        <tr style="background-color: #007bff; color: white;">
+                                <th style="position: sticky; top: 0; z-index: 2;">S.No</th>
+                                <th style="position: sticky; top: 0; z-index: 2;">Employee ID</th>
+                                <th style="position: sticky; top: 0; z-index: 2;">NAME</th>
+                                <th style="position: sticky; top: 0; z-index: 2;">EMAIL</th>
+                                <th style="position: sticky; top: 0; z-index: 2;">ROLE</th>
+                                <th style="display: none; position: sticky; top: 0; z-index: 2;" class="more-col">JOINED DATE</th>
+                                <th style="position: sticky; top: 0; z-index: 2;">LOGIN TIME</th>
+                                <th style="position: sticky; top: 0; z-index: 2;">STATUS</th>
+                                <th style="display: none; position: sticky; top: 0; z-index: 2;" class="more-col">LOGOUT TIME</th>
+                                <th style="display: none; position: sticky; top: 0; z-index: 2;" class="more-col">MOBILE NUMBER</th>
+                                <th style="display: none; position: sticky; top: 0; z-index: 2;" class="more-col">SKILL SET</th>
+                                <th style="display: none; position: sticky; top: 0; z-index: 2;" class="more-col">ANNUAL SALARY</th>
+                                <th style="display: none; position: sticky; top: 0; z-index: 2;" class="more-col">GENDER</th>
+                                <th style="display: none; position: sticky; top: 0; z-index: 2;" class="more-col">DOB</th>
+                                <th style="display: none; position: sticky; top: 0; z-index: 2;" class="more-col">MARITAL STATUS</th>
+                                <th style="display: none; position: sticky; top: 0; z-index: 2;" class="more-col">ADDRESS</th>
+                                <th style="display: none; position: sticky; top: 0; z-index: 2;" class="more-col">STATE</th>
+                                <th style="display: none; position: sticky; top: 0; z-index: 2;" class="more-col">COUNTRY</th>
+                                <th style="padding: 10px; position: sticky; right: 84.3px; top: 0; z-index: 3;">EDIT</th>
+                                <th style="text-align: center; position: sticky; right: 0.1px; top: 0; z-index: 3;">DELETE</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for emp in employees_data %}
+                            <tr class="emp-table-data">
+                                <td>{{ loop.index }}</td>
+                                <td style="text-align: left;">{{ emp.get('emp_id') }}</td>
+                                <td style="text-align: left;">{{ emp.get('username') }}</td>
+                                <td style="text-align: left;">{{ emp.get('email') }}</td>
+                                <td style="text-align: left;">{{ emp.get('job_role') }}</td>
+                                <td  class="more-col" style="display: none;">{{ emp.get('joined_date').strftime('%d-%m-%Y') }}</td>
+                                <td>{% if emp.get('login_time') %}{{ emp.get('login_time') }}{% endif %}</td>
+                                <td class="{% if emp.get('status') == 'Active' %}active{% else %}inactive{% endif %}">{{ emp.get('status') }}</td>
+                                <td class="more-col" style="display: none;">{% if emp.get('logout_time') %}{{ emp.get('logout_time') }}{% endif %}</td>
+                                <td class="more-col" style="display: none;text-align: left;">{% if emp.get('mobile') %}{{ emp.get('mobile') }}{% endif %}</td>
+                                <td class="more-col" style="display: none;text-align: left;">{% if emp.get('sill_set') %}{{ emp.get('skill_set') }}{% endif %}</td>
+                                <td class="more-col" style="display: none;">{% if emp.get('salary') %}{{ emp.get('salary') }}{% endif %}</td>
+                                <td class="more-col" style="display: none;">{% if emp.get('gender') %}{{ emp.get('gender') }}{% endif %}</td>
+                                <td class="more-col" style="display: none;">{% if emp.get('date_of_birth') %}{{ emp.get('date_of_birth').strftime('%d-%m-%Y') }}{% endif %}</td>
+                                <td class="more-col" style="display: none;text-align: left;">{% if emp.get('marital_status') %}{{ emp.get('marital_status') }}{% endif %}</td>
+                                <td class="more-col" style="display: none;text-align: left;">{% if emp.get('address') %}{{ emp.get('address').title() }}{% endif %}</td>
+                                <td class="more-col" style="display: none;text-align: left;">{% if emp.get('state') %}{{ emp.get('state').title()}}{% endif %}</td>
+                                <td class="more-col" style="display: none;text-align: left;">{% if emp.get('country') %}{{ emp.get('country').title() }}{% endif %}</td>
+                                
+                                <td style="padding: 0 35px;background-color: white; position: sticky; right: 84.3px; z-index: 1;">
+                                    <center>
+                                        <a href="{{ url_for('edit', tab= current_tab, emp_id = emp.get('emp_id'))}}">
+                                            <button class="btn-square btn-edit">
+                                                <i class="fas fa-pen-to-square"></i>
+                                            </button>
+                                        </a>
+                                    </center>
+                                </td>
+                                <td style=" padding: 0 25px; background-color: white; position: sticky; right: 0px; z-index: 1;">
+                                    <center>
+                                        <a href="{{ url_for('delete', tab= current_tab, emp_id = emp.get('emp_id') )}}">
+                                            <button class="btn-square btn-delete">
+                                                <i class="fas fa-trash-alt"></i>
+                                            </button>
+                                        </a>
+                                    </center>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    {% elif current_tab == 'logout' %}
+        <div style="margin-top: 190px ; width: 500px; height: 180px;" class="container section {% if current_tab == 'logout' %}active{% endif %}" id="logout" style="padding: 30px 30px 60px; margin: 130px auto; width: 40%;">
+            <h1 style="text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4); margin-bottom: -10px;">See You Soon!</h1>
+            <h2 style="text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4); margin-bottom: 30px;">Are you sure you want to log out?</h2>
+           
+            <form action="{{ url_for('logout') }}" method="POST">
+                <div class="buttons">
+                    <button class="button btn yes" type="submit" style="border: none; width: 36%; cursor: pointer; font-weight: bold; font-size: 16px;">
+                        Yes, Log Me Out
+                    </button>
+                    <a style="width: 30%;" href="javascript:history.back()" class="btn no">No, Take Me Back</a>
+                </div>
+            </form>
+            </div> 
+        </div>
+    {% endif %}
+
+    <script>
+        let prevScrollPos = window.pageYOffset;
+
+        document.addEventListener("DOMContentLoaded", function () {
+        let prevScrollPos = window.pageYOffset;
+        const navbar = document.getElementById("navbar");
+
+        window.onscroll = function () {
+            const currentScrollPos = window.pageYOffset;
+
+            if (currentScrollPos === 0) {
+                // At the top of the page — original style
+                navbar.style.top = "0";
+                navbar.style.backgroundColor = "rgba(0, 0, 0, 0.2)"; // or your original color
+            } else if (prevScrollPos > currentScrollPos) {
+                // Scrolling up
+                navbar.style.top = "0";
+                navbar.style.backgroundColor = "rgba(0, 0, 0, 1)";
+            } else {
+                // Scrolling down
+                navbar.style.top = "-100px";
+                navbar.style.backgroundColor = "rgba(0, 0, 0, 0.2)";
+            }
+            prevScrollPos = currentScrollPos;
+        };
+        });
+
+        const overlay = document.getElementById("overlay");
+
+        overlay.addEventListener("click", function () {
+        hideOverlay();
+        });
+
+        function hideOverlay() {
+        overlay.style.display = "none";
+        }
+    </script>
+
+</body>
+</html>

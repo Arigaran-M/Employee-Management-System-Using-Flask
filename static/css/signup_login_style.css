@@ -1,0 +1,208 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(to right, #1086d0, #29c289); /* Blue & Green */
+    margin: 0;
+    padding: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.alert {
+    width: 100%;
+    margin: 20px auto;
+    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+    border-radius: 6px;
+    font-family: Arial, sans-serif;
+    overflow:hidden ;
+    position: relative;
+}
+
+.btn-close {
+    position: absolute;
+    top: 0.5rem;
+    right: 1rem;
+    background: transparent;
+    border: none;
+    font-size: 2rem;
+    line-height: 1;
+    color: #070707;
+    cursor: pointer;
+}
+
+.fade {
+    opacity: 0;
+    transition: opacity 0.15s linear;
+}
+
+.show {
+    opacity: 1;
+}
+.container {
+    width: 500px;
+    background: white;
+    padding: 30px;
+    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    text-align: center;
+}
+h2 {
+    margin-bottom: 20px;
+    color: #007bff;
+    font-size: 26px;
+}
+
+.alert-row  {
+    padding: 12px;
+    font-weight: bold;
+}
+.alert-row.tryagain {
+    background-color: red;
+    color: white;
+}
+.alert-row.success {
+    background-color: green;
+    color: white;
+}
+.message-row {
+    padding: 10px;
+    text-align: center;
+    border-top: 1px solid #ffcccc;
+}
+.message-row.tryagain {
+    background-color: white;
+    color: red;
+}
+.message-row.success {
+    background-color: white;
+    color: green;
+}
+.message-row a {
+    color: #007bff;
+    font-weight: bold;
+    font-size: 14px;
+    text-decoration: none;
+}
+.message-row a:hover {
+    text-decoration: underline;
+}
+label {
+    font-weight: bold;
+    text-align: left;
+    display: block;
+    margin-top: 10px;
+    color: #333;
+}
+input, select {
+    width: 93%;
+    padding: 12px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 14px;
+}
+select {
+    cursor: pointer;
+    width: 98%;
+    appearance: none
+}
+
+.flatpickr-calendar {
+    font-size: 0.85rem !important;
+    transform: scale(0.85) !important;
+    transform-origin: top left !important;
+}
+
+.flatpickr-calendar.airbnb-theme {
+    width: 260px !important;
+}
+
+.flatpickr-current-month .flatpickr-monthDropdown-months,
+.flatpickr-current-month input.cur-year {
+    font-size: 0.85rem !important;
+}
+
+.email.exist_email,.password.wrong_password, .email.invalid_email{
+    border: 2px solid red;
+    background-color: #ffe6e6;
+}
+form button, form a{
+    width: 100%;
+    padding: 12px;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 15px;
+    transition: 0.3s;
+}
+form button:hover{
+    background: #0056b3;
+}
+
+form .cancel{
+    margin-top: 30px; width: 180px;
+    background:  #6C757D;
+}
+
+form .cancel:hover{
+    background: #5A6268;
+}
+.login-link, .signup-link {
+    margin-top: 10px;
+    font-size: 14px;
+}
+.login-link a, .signup-link a {
+    color: #007bff;
+    text-decoration: none;
+    font-weight: bold;
+}
+.login-link a:hover, .signup-link a:hover {
+    text-decoration: underline;
+}
+
+.form-group {
+    position: relative;
+    width: 500px;
+    text-align: center;
+}
+
+.form-group input {
+    width: 98%;
+    padding: 12px;
+    padding-right: 40px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 14px;
+    box-sizing: border-box;
+}
+
+.toggle-password {
+    position: absolute;
+    filter: grayscale(100%);
+    transition: filter 200ms ease-in-out;
+    right: 15px;
+    top: 55%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    font-size: 16px;
+    user-select: none;
+}
+.toggle-password:hover {
+    filter: grayscale(0%);
+}
+
+.warning {
+    color: red;
+    font-size: 12px;
+    margin-left:6px;
+    font-weight: bold;
+    text-align: left;
+    display: block;
+    margin-top: 3px;
+}
+

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>    
+    <link rel="icon" href="{{ url_for('static', filename='images/icon.png') }}" type="image/png">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/signup_login_style.css') }}">
+    <script src="{{ url_for('static', filename='js/basic_js.js') }}"></script>
+    <link rel="stylesheet" href="/static/css/signup_login_style.css">
+    <script src="/static/js/basic_js.js"></script>
+
+</head>
+<body style="height: 90vh;">
+    <div class="container">
+        <h2>Login to Your Account</h2>
+        
+        {% with messages = get_flashed_messages(with_categories=True) %}
+            {% if messages %}
+                <div class="alert-message alert alert-warning fade show" role="alert">
+                {% for message_tuple in messages %}
+                    {% if message_tuple is iterable and message_tuple | length == 2 %}
+                        {% set category, message = message_tuple %}
+                    {% else %}
+                        {% set category = "default" %}
+                        {% set message = message_tuple %}
+                    {% endif %}
+                    {% if category == "tryagain" %}
+                
+                        <div class="alert-row tryagain ">
+                            ⚠️ Alert: Something went wrong!
+                        </div>
+                        <div class="message-row tryagain">
+                            {{ message | safe }}
+                        </div>
+
+                    {% endif %}                
+                {% endfor %}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">&times;</button>
+                </div>
+            {% endif %}
+        {% endwith %}
+        
+        <form action="{{ url_for('logIn') }}" method="POST">
+            <label>Email ID:</label>
+            <input class="email {{category}}" type="email" name="email" value="{{data.get('email','')}}" placeholder="Enter your email" required>
+            {% if category == "invalid_email"%}<p class="warning">This email ID is not registered.</p>{% endif %}
+
+            <label>Password:</label>
+            <div class="form-group">
+                <input class="password {{category}}" type="password" value="{{data.get('password','')}}" id="password" name="password" placeholder="Enter password" required>
+                <span class="toggle-password" onclick="toggleVisibility('password', this)">🙈</span>
+            </div>
+            {% if category == "wrong_password"%}<p class="warning">Incorrect password. Please try again.</p>{% endif %}
+
+            <button style="margin-top: 30px; width: 230px; font-weight: 500 ;margin-right: 20px;" type="submit">Log In</button>
+            
+            <a href="{{url_for('home')}}" style="text-decoration: none; padding: 10px 70px;" class="cancel">Go to Home</a>
+        </form>
+
+        <div class="forgot-password" style="margin-top: 14px;">
+            <a href="#">Forgot Password?</a>
+        </div>
+
+        <div class="signup-link">
+            Don't have an account? <a href="{{url_for('signUp')}}">Sign Up</a>
+        </div>
+    </div>
+</body>
+</html>

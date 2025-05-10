@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up</title>
+    <link rel="icon" href="{{ url_for('static', filename='images/icon.png') }}" type="image/png">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/signup_login_style.css') }}">
+    <script src="{{ url_for('static', filename='js/basic_js.js') }}"></script>
+    <script src="/static/js/basic_js.js"></script>
+    <link rel="stylesheet" href="/static/css/signup_login_style.css"> 
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/airbnb.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+</head>
+<body>
+    <div class="container">
+        
+        <h2>Create Your Account</h2>
+        {% with messages = get_flashed_messages(with_categories=True) %}
+            {% if messages %}
+                <div class="alert-message alert alert-warning fade show" role="alert">
+                {% for message_tuple in messages %}
+                    {% if message_tuple is iterable and message_tuple | length == 2 %}
+                        {% set category, message = message_tuple %}
+                    {% else %}
+                        {% set category = "default" %}
+                        {% set message = message_tuple %}
+                    {% endif %}
+                    {% if category == "tryagain" %}
+                
+                        <div class="alert-row tryagain ">
+                            ⚠️ Alert: Something went wrong!
+                        </div>
+                        <div class="message-row tryagain">
+                            {{ message }}
+                        </div>
+
+                    {% endif %}                
+                {% endfor %}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">&times;</button>
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        <form action="{{ url_for('signUp') }}" method="POST" autocomplete="off">
+            <label for="username">Username:</label>
+            <input type="text" id = "username" name="username" value="{{data.get('username','')}}" placeholder="Enter Your Name (eg.Ari M)" required>
+            
+            <label for="email">Email ID:</label>
+            <input class="email {{category}}" id="email" value="{{data.get('email','')}}" type="email" name="email" placeholder="Enter Your Email" required>
+            {% if category == "exist_email"%}<p class="warning">This email id is already registered. Please use a different email.</p>{% endif %}
+            
+            <label for="department">Department:</label>
+            <select name="department" id="department" style="pointer-events: none; background-color: #ffffff; color: #000000;">
+                <option value="Software Development" selected>Software Development</option>
+            </select>
+
+            <label for="job_role">Job Role:</label>
+            <select id="job_role" name="job_role" required>
+                <option value="" disabled selected>Select Job Role</option>
+                <option value="Manager" {% if data.get("job_role") == 'Manager' %} selected {% endif %}>Manager</option>
+                <option value="Software Engineer" {% if data.get('job_role') == 'Software Engineer' %} selected {% endif %}>Software Engineer</option>
+                <option value="UI/UX Designer" {% if data.get('job_role') == 'UI/UX Designer' %} selected {% endif %}>UI/UX Designer</option>
+                <option value="Front-End Developer" {% if data.get('job_role') == 'Front-End Developer' %} selected {% endif %}>Front-End Developer</option>
+                <option value="Back-End Developer" {% if data.get('job_role') == 'Back-End Developer' %} selected {% endif %}>Back-End Developer</option>
+                <option value="Full Stack Developer" {% if data.get('job_role') == 'Full Stack Developer' %} selected {% endif %}>Full Stack Developer</option>
+                <option value="QA Engineer" {% if data.get('job_role') == 'QA Engineer' %} selected {% endif %}>QA Engineer</option>
+                <option value="DevOps Engineer" {% if data.get('job_role') == 'DevOps Engineer' %} selected {% endif %}>DevOps Engineer</option>
+                <option value="Software Architect" {% if data.get('job_role') == 'Software Architect' %} selected {% endif %}>Software Architect</option>
+                <option value="Mobile App Developer" {% if data.get('job_role') == 'Mobile App Developer' %} selected {% endif %}>Mobile App Developer</option>
+            </select>
+
+            <label for="joined_date">Joined Date:</label>
+            <input style="cursor: pointer" value="{{data.get('joined_date','')}}" type="text" id="joined_date" name="joined_date" placeholder="DD-MM-YYYY" required>
+            <script>
+                flatpickr("#joined_date", {
+                    dateFormat: "d-m-Y",
+                    allowInput: true,
+                    locale: {
+                    firstDayOfWeek: 1
+                    }
+                });
+            </script>
+            <label for="password">Password:</label>
+            <div class="form-group">
+                <input type="password" value="{{data.get('password','')}}" minlength="8" id="password" name="password" placeholder="Enter Password" required>
+                <span class="toggle-password" onclick="toggleVisibility('password', this)">🙈</span>
+            </div>
+
+            <label for="confirm_password">Re-enter Password:</label>
+            <div class="form-group">
+                <input class="password {{category}}" type="password" value="{{data.get('confirm_password','')}}" id="confirm_password" name="confirm_password" placeholder="Re-Enter Password" required>
+                <span class="toggle-password" onclick="toggleVisibility('confirm_password', this)">🙈</span>
+            </div>
+            {% if category == "wrong_password"%}<p class="warning">Passwords do not match. Please try again.</p>{% endif %}
+
+            <button style="margin-top: 30px; width: 180px; font-weight: 500 ;margin-right: 20px;" type="submit">Sign Up</button>
+            
+            <a href="{{url_for('home')}}" style="text-decoration: none; padding: 10px 40px;" class="cancel">Go to Home</a>
+        </form>
+
+        <div class="login-link">
+            Already have an account? <a href="{{url_for('logIn')}}">Login</a>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Profile</title>
+    <link rel="icon" href="{{ url_for('static', filename='images/icon.png') }}" type="image/png">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/signup_login_style.css') }}">
+    <script src="{{ url_for('static', filename='js/basic_js.js') }}"></script>
+    <link rel="stylesheet" href="/static/css/signup_login_style.css"> 
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/airbnb.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+</head>
+<body>
+    <div class="container">
+            <h2>Edit Profile</h2>
+        {% with messages = get_flashed_messages(with_categories=True) %}
+            {% if messages %}
+                <div class="alert-message alert alert-warning fade show" role="alert">
+                {% for message_tuple in messages %}
+                    {% if message_tuple is iterable and message_tuple | length == 2 %}
+                        {% set category, message = message_tuple %}
+                    {% else %}
+                        {% set category = "default" %}
+                        {% set message = message_tuple %}
+                    {% endif %}
+                    {% if category == "tryagain" %}
+                
+                        <div class="alert-row tryagain ">
+                            ⚠️ Alert: Something went wrong!
+                        </div>
+                        <div class="message-row tryagain">
+                            {{ message }}
+                        </div>
+
+                    {% endif %}                
+                {% endfor %}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">&times;</button>
+                </div>
+            {% endif %}
+        {% endwith %}
+        <form action="{{url_for('edit',tab=tab,emp_id=emp_id)}}" method="POST" autocomplete="off">
+
+            <label for="username">Username:</label>
+            <input type="text" id = "username" name="username" value="{{data.get('username','') or ''}}" placeholder="Enter New Username (Ex: Ari M)" required>
+            
+            <label for="email">Email ID:</label>
+            <input class="email {% if category == 'exist_email'%} {{category}} {% endif %}" id="email" value="{% if data.get('email','') %}{{data.get('email','')}}{% endif %}" type="email" name="email" placeholder="Enter New Email" required>
+            {% if category == "exist_email"%}<p class="warning">This email id is already registered. Please use a different email.</p>{% endif %}
+            
+            {% if  job_role.lower() in ['manager'] and (tab == 'employees') %}
+                <label for="department">Department:</label>
+                <select name="department" id="department" style="pointer-events: none; background-color: #ffffff; color: #000000;">
+                    <option value="Software Development" selected>Software Development</option>
+                </select>
+
+                <label for="job_role">Job Role:</label>
+                <select id="job_role" name="job_role" required>
+                    <option value="" disabled selected>Select Job Role</option>
+                    <option value="Manager" {% if data.get("job_role") == 'Manager' %} selected {% endif %}>Manager</option>
+                    <option value="Software Engineer" {% if data.get('job_role') == 'Software Engineer' %} selected {% endif %}>Software Engineer</option>
+                    <option value="UI/UX Designer" {% if data.get('job_role') == 'UI/UX Designer' %} selected {% endif %}>UI/UX Designer</option>
+                    <option value="Front-End Developer" {% if data.get('job_role') == 'Front-End Developer' %} selected {% endif %}>Front-End Developer</option>
+                    <option value="Back-End Developer" {% if data.get('job_role') == 'Back-End Developer' %} selected {% endif %}>Back-End Developer</option>
+                    <option value="Full Stack Developer" {% if data.get('job_role') == 'Full Stack Developer' %} selected {% endif %}>Full Stack Developer</option>
+                    <option value="QA Engineer" {% if data.get('job_role') == 'QA Engineer' %} selected {% endif %}>QA Engineer</option>
+                    <option value="DevOps Engineer" {% if data.get('job_role') == 'DevOps Engineer' %} selected {% endif %}>DevOps Engineer</option>
+                    <option value="Software Architect" {% if data.get('job_role') == 'Software Architect' %} selected {% endif %}>Software Architect</option>
+                    <option value="Mobile App Developer" {% if data.get('job_role') == 'Mobile App Developer' %} selected {% endif %}>Mobile App Developer</option>
+                </select>
+
+                <label for="joined_date">Joined Date:</label>
+                <input style="cursor: pointer" value="{% if data.get('joined_date','') %} {{data.get('joined_date','').strftime('%d-%m-%Y')}} {% endif %}" type="text" id="joined_date" name="joined_date" placeholder="DD-MM-YYYY" required>
+                <script>
+                    flatpickr("#joined_date", {
+                        dateFormat: "d-m-Y",
+                        allowInput: true,
+                        locale: {
+                        firstDayOfWeek: 1
+                        }
+                    }); 
+                </script>
+
+                <label for="salary">Salary:</label>
+                <input type="number" id="salary" name="salary" step="any" value = "{{ data.get('salary', '') }}" placeholder="Enter Salary">
+
+                <label for="password">New Password:</label>
+                <div class="form-group">
+                    <input type="password" id="password" minlength="8" value = "{{ data.get('password', '') }}" name="password" placeholder="Enter New Password">
+                    <span class="toggle-password" onclick="toggleVisibility('password', this)">🙈</span>
+                </div>
+
+            {% endif %}
+
+            {% if tab == 'profile' %}
+            <label for="mobile">Mobile Number:</label>
+            <input type="text" id="mobile" name="mobile" pattern="[0-9\s\-+()]+" title="Only numbers, spaces, + and dashes are allowed" value="{{data.get('mobile') or ''}}" placeholder="Enter 10-Digit Mobile Number" minlength="10" maxlength="15" >
+            
+            <label for="gender">Gender:</label>
+            <select id="gender" name="gender">
+                <option value="" selected >Select Gender</option>
+                <option value="Male" {% if data.get('gender') == 'Male' %} selected {% endif %}>Male</option>
+                <option value="Female" {% if data.get('gender') == 'Female' %} selected {% endif %}>Female</option>
+                <option value="Others" {% if data.get('gender') == 'Other' %} selected {% endif %}>Others</option>
+            </select>
+
+            <label for="date_of_birth">Date of Birth:</label>
+            <input style="cursor: pointer" value="{% if data.get('date_of_birth','') %}{{data.get('date_of_birth','').strftime('%d-%m-%Y')}}{% endif %}" type="text" id="date_of_birth" name="date_of_birth" placeholder="DD-MM-YYYY">
+            
+            <script>
+                flatpickr("#date_of_birth", {
+                    dateFormat: "d-m-Y",
+                    allowInput: true,
+                    locale: {
+                    firstDayOfWeek: 1
+                    }
+                });
+            </script>
+
+            <label for="marital_status">Marital Status:</label>
+            <select id="marital_status" name="marital_status">
+                <option value="" selected >Select Marital Status</option>
+                <option value="Single" {% if data.get('marital_status') == 'Single' %} selected {% endif %}>Single</option>
+                <option value="Married" {% if data.get('marital_status') == 'Married' %} selected {% endif %}>Married</option>
+                <option value="Others" {% if data.get('marital_status') == 'Other' %} selected {% endif %}>Others</option>
+            </select>
+
+            <label for="skill_set">Skill Set:</label>
+            <input type="text" id = "skill_set" name="skill_set" value="{{data.get('skill_set') or ''}}" placeholder="Enter Your Skill Set (Ex: Java, Python, ect.,)">
+            
+            <label for="street">Area Address:</label>
+            <input type="street" id = "street" name="street" value="{{data.get('street') or ''}}" placeholder="Enter Your Area Address (Ex: No.5, Vijaya Nagar, Velacheri)">
+          
+            <label for="city">City:</label>
+            <input type="text" id = "city" name="city" value="{{data.get('city') or ''}}" placeholder="Enter Your City (Ex: Chennai)">
+
+            <label for="state">State:</label>
+            <input type="text" id = "state" name="state" value="{{data.get('state') or ''}}" placeholder="Enter Your State (Ex: Tamilnadu)">
+            
+            <label for="zip">ZIP Code/PIN Code:</label>
+            <input type="text" id = "zip" name="zip" value="{{data.get('zip') or ''}}" placeholder="Enter Your ZIP Code/PIN Code (Ex: 605102)">
+
+            <label for="country">Country:</label>
+            <select id="country" name="country">
+                <option value="" selected >Select Country</option>
+                <option value="India" {% if data.get('country') == 'India' %} selected {% endif %}>India</option>
+                <option value="USA" {% if data.get('country') == 'USA' %} selected {% endif %}>USA</option>
+                <option value="UK" {% if data.get('country') == 'UK' %} selected {% endif %}>UK</option>
+            </select>
+            {% endif %}
+            <button style="margin-top: 30px; width: 180px; margin-right: 20px;" type="submit">Save</button>
+            
+            <a href="{%if tab == 'profile' %}{{url_for('profile')}}{% elif tab == 'employees'%}{{ url_for('employees')}}{% else %} {{url_for('home')}}{% endif %}" style="text-decoration: none; padding: 10px 50px;" class="cancel">Go Back</a>
+
+        </form>    
+    </div>
+</body>
+</html>
